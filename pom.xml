@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.arangodb</groupId>
+    <artifactId>arangodb-java-driver-quickstart</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.arangodb</groupId>
+            <artifactId>arangodb-java-driver</artifactId>
+<!--            TODO: replace version with x.y.z-->
+            <version>6.9.0</version>
+        </dependency>
+        <!--TODO: add-->
+        <dependency>
+            <groupId>com.arangodb</groupId>
+            <artifactId>jackson-dataformat-velocypack</artifactId>
+            <!--            TODO: replace version with x.y.z-->
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
+    <!--    TODO: add section about setting specific jackson version-->
+    <!--    supported versions are jackson 2.10, 2.11, 2.12: document it in the jackson-dataformat-velocypack documentation and link it from the tutorial-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>2.12.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
