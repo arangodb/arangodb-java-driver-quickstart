@@ -1,3 +1,8 @@
+// TODO: avoid mentioning ArangoDB verisons
+// TODO: remove all images, leave code snippets only
+// TODO: remove mentions to Eclipse
+// TODO: add gradle configuration (as alternative to maven)
+
 // TODO: update imports as the folowing ones
 import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoCursor;
@@ -13,9 +18,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Collections;
 import java.util.Map;
 
-/**
- * @author Michele Rastelli
- */
 public class FirstProject {
     public static void main(String[] args) {
         ArangoDB arangoDB = new ArangoDB.Builder()
