@@ -1,8 +1,3 @@
-// TODO: avoid mentioning ArangoDB verisons
-// TODO: remove all images, leave code snippets only
-// TODO: remove mentions to Eclipse
-// TODO: add gradle configuration (as alternative to maven)
-
 // TODO: update imports as the folowing ones
 import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoCursor;
