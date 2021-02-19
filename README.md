@@ -3,9 +3,9 @@
 Code for [Java driver tutorial](https://www.arangodb.com/tutorials/tutorial-sync-java-driver/)
 
 TODOs:
-- avoid mentioning ArangoDB verisons
-- remove all images, leave code snippets only
-- remove mentions to Eclipse
-- add gradle configuration (as alternative to maven)
+- [DONE] avoid mentioning ArangoDB versions
+- [DONE] remove all images, leave code snippets only
+- [DONE] remove mentions to Eclipse
+- [DONE] add gradle configuration (as alternative to maven)
 - update `Learn more` links
 - update chinese translations

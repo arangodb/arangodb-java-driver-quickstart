@@ -17,14 +17,11 @@
         <dependency>
             <groupId>com.arangodb</groupId>
             <artifactId>arangodb-java-driver</artifactId>
-<!--            TODO: replace version with x.y.z-->
             <version>6.9.0</version>
         </dependency>
-        <!--TODO: add-->
         <dependency>
             <groupId>com.arangodb</groupId>
             <artifactId>jackson-dataformat-velocypack</artifactId>
-            <!--            TODO: replace version with x.y.z-->
             <version>1.0.0</version>
         </dependency>
     </dependencies>

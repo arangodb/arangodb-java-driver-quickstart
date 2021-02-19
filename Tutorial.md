@@ -1,23 +1,39 @@
 # Tutorial: Java in 10 Minutes
 
 This is a short tutorial with the [Java Driver](https://github.com/arangodb/arangodb-java-driver) and ArangoDB. In less
-than 10 minutes you can learn how to use ArangoDB with Java.
+than 10 minutes you can learn how to use ArangoDB Java driver in Maven and Gradle projects.
 
-## Install the Java driver
+## Project configuration
 
-This tutorial will explain the usage of the java driver in Eclipse. First of all add the Java driver via maven to your
-project:
+To use the ArangoDB Java driver you need to import 2 libraries into your project:
+- [arangodb-java-driver](https://github.com/arangodb/arangodb-java-driver): the driver itself
+- [jackson-dataformat-velocypack](https://github.com/arangodb/jackson-dataformat-velocypack): a dataformat backend 
+  implementation enabling VelocyPack support for [Jackson Databind API](https://github.com/FasterXML/jackson-databind).
+
+In a Maven project you need to add the following dependencies to `pom.xml`:
 
 ```xml
-
 <dependencies>
     <dependency>
         <groupId>com.arangodb</groupId>
         <artifactId>arangodb-java-driver</artifactId>
-        <version>4.2.2</version>
+        <version>...</version>
     </dependency>
-    ....
+    <dependency>
+        <groupId>com.arangodb</groupId>
+        <artifactId>jackson-dataformat-velocypack</artifactId>
+        <version>...</version>
+    </dependency>
 </dependencies>
+```
+
+while in a Gradle project you will add the following to `build.gradle`:
+
+```groovy
+dependencies {
+    implementation 'com.arangodb:arangodb-java-driver:...'
+    implementation 'com.arangodb:jackson-dataformat-velocypack:...'
+}
 ```
 
 ## Connection
@@ -25,7 +41,7 @@ project:
 Let's configure and open a connection to start ArangoDB.
 
 ```java
-ArangoDB arangoDB=new ArangoDB.Builder().build();
+ArangoDB arangoDB = new ArangoDB.Builder().build();
 ```
 
 > **Hint:** The default connection is to http://127.0.0.1:8529.
@@ -296,8 +312,8 @@ Removed document: 6
 
 ## Learn more
 
-    Have a look at the [AQL documentation](https://docs.arangodb.com/latest/AQL/index.html) to learn more about our query language.
-    Do you want to know more about Databases? [Click here!](https://docs.arangodb.com/latest/Manual/DataModeling/Databases/index.html)
-    Read more about [Collections](https://docs.arangodb.com/latest/Manual/DataModeling/Collections/index.html).
-    Explore [Documents](https://docs.arangodb.com/latest/Manual/DataModeling/Documents/index.html) in our documentation.
-    For more examples you can explore the [ArangoDB cookbook](https://www.arangodb.com/docs/stable/).
+- Have a look at the [AQL documentation](https://docs.arangodb.com/latest/AQL/index.html) to learn more about our query language.
+- Do you want to know more about Databases? [Click here!](https://docs.arangodb.com/latest/Manual/DataModeling/Databases/index.html)
+- Read more about [Collections](https://docs.arangodb.com/latest/Manual/DataModeling/Collections/index.html).
+- Explore [Documents](https://docs.arangodb.com/latest/Manual/DataModeling/Documents/index.html) in our documentation.
+- For more examples you can explore the [ArangoDB cookbook](https://www.arangodb.com/docs/stable/).

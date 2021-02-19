@@ -9,7 +9,6 @@ repositories {
     mavenCentral()
 }
 
-// TODO: add
 dependencies {
     implementation 'com.arangodb:arangodb-java-driver:6.9.0'
     implementation 'com.arangodb:jackson-dataformat-velocypack:1.0.0'
