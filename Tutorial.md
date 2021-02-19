@@ -3,6 +3,7 @@
 This is a short tutorial with the [Java Driver](https://github.com/arangodb/arangodb-java-driver) and ArangoDB. In less
 than 10 minutes you can learn how to use ArangoDB Java driver in Maven and Gradle projects.
 
+
 ## Project configuration
 
 To use the ArangoDB Java driver you need to import 2 libraries into your project:
@@ -36,15 +37,19 @@ dependencies {
 }
 ```
 
+
 ## Connection
 
 Let's configure and open a connection to start ArangoDB.
 
 ```java
-ArangoDB arangoDB = new ArangoDB.Builder().build();
+ArangoDB arangoDB = new ArangoDB.Builder()
+    .serializer(new ArangoJack())
+    .build();
 ```
 
 > **Hint:** The default connection is to http://127.0.0.1:8529.
+
 
 ## Creating a database
 
@@ -66,6 +71,7 @@ After executing this program the console output should be:
 Database created: mydb
 ```
 
+
 ## Creating a collection
 
 Now let’s create our first collection:
@@ -85,6 +91,7 @@ After executing this program the console output should be:
 ```text
 Collection created: firstCollection
 ```
+
 
 ## Creating a document
 
@@ -119,6 +126,7 @@ Some details you should know about the code:
 - `addAttribute()` puts a new key/value pair into the object
 - each attribute is stored as a single key value pair in the document root
 
+
 ## Read a document
 
 To read the created document:
@@ -147,17 +155,17 @@ Some details you should know about the code:
 - `getDocument()` returns the stored document data in the given JavaBean (`BaseDocument`)
 
 
-## Read a document as VelocyPack
+## Read a document as Jackson JsonNode
 
-You can also read a document as a VelocyPack:
+You can also read a document as a Jackson `JsonNode`:
 
 ```java
 try {
-    VPackSlice myDocument = arangoDB.db(dbName).collection(collectionName).getDocument("myKey", VPackSlice.class);
-    System.out.println("Key: " + myDocument.get("_key").getAsString());
-    System.out.println("Attribute a: " + myDocument.get("a").getAsString());
-    System.out.println("Attribute b: " + myDocument.get("b").getAsInt());
-} catch (ArangoDBException | VPackException e) {
+    ObjectNode myDocument = arangoDB.db(dbName).collection(collectionName).getDocument("myKey", ObjectNode.class);
+    System.out.println("Key: " + myDocument.get("_key").textValue());
+    System.out.println("Attribute a: " + myDocument.get("a").textValue());
+    System.out.println("Attribute b: " + myDocument.get("b").intValue());
+} catch (ArangoDBException e) {
     System.err.println("Failed to get document: myKey; " + e.getMessage());
 }
 ```
@@ -245,7 +253,7 @@ Get all documents with the name Homer from collection firstCollection and iterat
 ```java
 try {
     String query = "FOR t IN firstCollection FILTER t.name == @name RETURN t";
-    Map<String, Object> bindVars = new MapBuilder().put("name", "Homer").get();
+    Map<String, Object> bindVars = Collections.singletonMap("name", "Homer");
     ArangoCursor<BaseDocument> cursor = arangoDB.db(dbName).query(query, bindVars, null, BaseDocument.class);
     cursor.forEachRemaining(aDocument -> {
         System.out.println("Key: " + aDocument.getKey());
@@ -285,7 +293,7 @@ Now we will delete the document created before:
 try {
     String query = "FOR t IN firstCollection FILTER t.name == @name "
         + "REMOVE t IN firstCollection LET removed = OLD RETURN removed";
-    Map<String, Object> bindVars = new MapBuilder().put("name", "Homer").get();
+    Map<String, Object> bindVars = Collections.singletonMap("name", "Homer");
     ArangoCursor<BaseDocument> cursor = arangoDB.db(dbName).query(query, bindVars, null, BaseDocument.class);
     cursor.forEachRemaining(aDocument -> {
         System.out.println("Removed document " + aDocument.getKey());

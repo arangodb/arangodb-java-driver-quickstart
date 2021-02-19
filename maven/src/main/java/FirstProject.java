@@ -1,4 +1,3 @@
-// TODO: update imports as the folowing ones
 import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoCursor;
 import com.arangodb.ArangoDB;
@@ -16,7 +15,6 @@ import java.util.Map;
 public class FirstProject {
     public static void main(String[] args) {
         ArangoDB arangoDB = new ArangoDB.Builder()
-                // TODO: add
                 .serializer(new ArangoJack())
                 .build();
         String dbName = "mydb";
@@ -68,7 +66,6 @@ public class FirstProject {
             System.err.println("Failed to get document: myKey; " + e.getMessage());
         }
 
-        // TODO: add section "Read a document as Jackson JsonNode"
         System.out.println("-----------");
         try {
             ObjectNode myDocument = arangoDB.db(dbName).collection(collectionName).getDocument("myKey",
@@ -121,7 +118,6 @@ public class FirstProject {
 
         try {
             String query = "FOR t IN firstCollection FILTER t.name == @name RETURN t";
-            // FIXME: replace MapBuilder with Collections.singletonMap
             Map<String, Object> bindVars = Collections.singletonMap("name", "Homer");
             ArangoCursor<BaseDocument> cursor = arangoDB.db(dbName).query(query, bindVars, null,
                     BaseDocument.class);
@@ -136,7 +132,6 @@ public class FirstProject {
         try {
             String query = "FOR t IN firstCollection FILTER t.name == @name "
                     + "REMOVE t IN firstCollection LET removed = OLD RETURN removed";
-            // FIXME: replace MapBuilder with Collections.singletonMap
             Map<String, Object> bindVars = Collections.singletonMap("name", "Homer");
             ArangoCursor<BaseDocument> cursor = arangoDB.db(dbName).query(query, bindVars, null,
                     BaseDocument.class);
@@ -147,7 +142,5 @@ public class FirstProject {
             System.err.println("Failed to execute query. " + e.getMessage());
         }
 
-        // TODO: add to tutorial
-        arangoDB.shutdown();
     }
 }
