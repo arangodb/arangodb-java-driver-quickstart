@@ -320,8 +320,7 @@ Removed document: 6
 
 ## Learn more
 
-- Have a look at the [AQL documentation](https://docs.arangodb.com/latest/AQL/index.html) to learn more about our query language.
-- Do you want to know more about Databases? [Click here!](https://docs.arangodb.com/latest/Manual/DataModeling/Databases/index.html)
-- Read more about [Collections](https://docs.arangodb.com/latest/Manual/DataModeling/Collections/index.html).
-- Explore [Documents](https://docs.arangodb.com/latest/Manual/DataModeling/Documents/index.html) in our documentation.
-- For more examples you can explore the [ArangoDB cookbook](https://www.arangodb.com/docs/stable/).
+- Have a look at the [AQL documentation](https://www.arangodb.com/docs/stable/aql/) to learn more about our query language.
+- Do you want to know more about Databases? [Click here!](https://www.arangodb.com/docs/stable/data-modeling.html)
+- Read more about [Collections](https://www.arangodb.com/docs/stable/data-modeling-collections.html).
+- Explore [Documents](https://www.arangodb.com/docs/stable/data-modeling-documents.html) in our documentation.

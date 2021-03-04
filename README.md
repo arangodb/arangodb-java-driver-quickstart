@@ -7,5 +7,5 @@ TODOs:
 - [DONE] remove all images, leave code snippets only
 - [DONE] remove mentions to Eclipse
 - [DONE] add gradle configuration (as alternative to maven)
-- update `Learn more` links
+- [DONE] update `Learn more` links
 - update chinese translations
