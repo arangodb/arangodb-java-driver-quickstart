@@ -132,13 +132,13 @@ Some details you should know about the code:
 To read the created document:
 
 ```java
-try {
-        BaseDocument myDocument = arangoDB.db(dbName).collection(collectionName).getDocument("myKey", BaseDocument.class);
-        System.out.println("Key: " + myDocument.getKey());
-        System.out.println("Attribute a: " + myDocument.getAttribute("a"));
-        System.out.println("Attribute b: " + myDocument.getAttribute("b"));
-} catch(ArangoDBException e) {
-        System.err.println("Failed to get document: myKey; " + e.getMessage());
+BaseDocument myDocument = arangoDB.db(dbName).collection(collectionName).getDocument("myKey", BaseDocument.class);
+if (myDocument != null) {
+    System.out.println("Key: " + myDocument.getKey());
+    System.out.println("Attribute a: " + myDocument.getAttribute("a"));
+    System.out.println("Attribute b: " + myDocument.getAttribute("b"));
+} else {
+    System.err.println("Failed to get document: myKey;");
 }
 ```
 
@@ -160,13 +160,13 @@ Some details you should know about the code:
 You can also read a document as a Jackson `JsonNode`:
 
 ```java
-try {
-    ObjectNode myDocument = arangoDB.db(dbName).collection(collectionName).getDocument("myKey", ObjectNode.class);
+ObjectNode myDocument = arangoDB.db(dbName).collection(collectionName).getDocument("myKey", ObjectNode.class);
+if (myDocument != null) {
     System.out.println("Key: " + myDocument.get("_key").textValue());
     System.out.println("Attribute a: " + myDocument.get("a").textValue());
     System.out.println("Attribute b: " + myDocument.get("b").intValue());
-} catch (ArangoDBException e) {
-    System.err.println("Failed to get document: myKey; " + e.getMessage());
+} else {
+    System.err.println("Failed to get document: myKey;");
 }
 ```
 
