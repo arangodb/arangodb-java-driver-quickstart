@@ -48,7 +48,7 @@ ArangoDB arangoDB = new ArangoDB.Builder()
     .build();
 ```
 
-> **Hint:** The default connection is to http://127.0.0.1:8529.
+> **Hint:** The default connection is to 127.0.0.1:8529.
 
 
 ## Creating a database
@@ -56,19 +56,9 @@ ArangoDB arangoDB = new ArangoDB.Builder()
 Let’s create a new database:
 
 ```java
-String dbName = "mydb";
-try {
-    arangoDB.createDatabase(dbName);
-    System.out.println("Database created: " + dbName);
-} catch(ArangoDBException e) {
-    System.err.println("Failed to create database: " + dbName + "; " + e.getMessage());
-}
-```
-
-After executing this program the console output should be:
-
-```text
-Database created: mydb
+ArangoDatabase db = arangoDB.db(DbName.of("mydb"));
+System.out.println("Creating database...");
+db.create();
 ```
 
 
@@ -77,19 +67,9 @@ Database created: mydb
 Now let’s create our first collection:
 
 ```java
-String collectionName = "firstCollection";
-try {
-    CollectionEntity myArangoCollection=arangoDB.db(dbName).createCollection(collectionName);
-    System.out.println("Collection created: " + myArangoCollection.getName());
-} catch(ArangoDBException e) {
-    System.err.println("Failed to create collection: " + collectionName + "; " + e.getMessage());
-}
-```
-
-After executing this program the console output should be:
-
-```text
-Collection created: firstCollection
+ArangoCollection collection = db.collection("firstCollection");
+System.out.println("Creating collection...");
+collection.create();
 ```
 
 
@@ -102,28 +82,18 @@ For this example we use the class BaseDocument, provided with the driver. The at
 map as key<String>/value<Object> pair:
 
 ```java
-BaseDocument myObject = new BaseDocument();
-myObject.setKey("myKey");
-myObject.addAttribute("a", "Foo");
-myObject.addAttribute("b", 42);
-try {
-    arangoDB.db(dbName).collection(collectionName).insertDocument(myObject);
-    System.out.println("Document created");
-} catch(ArangoDBException e) {
-    System.err.println("Failed to create document. " + e.getMessage());
-}
-```
-
-After executing this program the console output should be:
-
-```text
-Document created
+String key = "myKey";
+BaseDocument doc = new BaseDocument(key);
+doc.addAttribute("a", "Foo");
+doc.addAttribute("b", 42);
+System.out.println("Inserting document...");
+collection.insertDocument(doc);
 ```
 
 Some details you should know about the code:
 
-- `setKey()` sets the key value of the new object
-- `addAttribute()` puts a new key/value pair into the object
+- the document key is passed to the `BaseDocument` constructor
+- `addAttribute()` puts a new key/value pair into the document
 - each attribute is stored as a single key value pair in the document root
 
 
@@ -132,14 +102,11 @@ Some details you should know about the code:
 To read the created document:
 
 ```java
-BaseDocument myDocument = arangoDB.db(dbName).collection(collectionName).getDocument("myKey", BaseDocument.class);
-if (myDocument != null) {
-    System.out.println("Key: " + myDocument.getKey());
-    System.out.println("Attribute a: " + myDocument.getAttribute("a"));
-    System.out.println("Attribute b: " + myDocument.getAttribute("b"));
-} else {
-    System.err.println("Failed to get document: myKey;");
-}
+System.out.println("Reading document...");
+BaseDocument readDocument = collection.getDocument(key, BaseDocument.class);
+System.out.println("Key: " + readDocument.getKey());
+System.out.println("Attribute a: " + readDocument.getAttribute("a"));
+System.out.println("Attribute b: " + readDocument.getAttribute("b"));
 ```
 
 After executing this program the console output should be:
@@ -152,7 +119,7 @@ Attribute b: 42
 
 Some details you should know about the code:
 
-- `getDocument()` returns the stored document data in the given JavaBean (`BaseDocument`)
+- `getDocument()` reads the stored document data and deserilizes it into the given class (`BaseDocument`)
 
 
 ## Read a document as Jackson JsonNode
@@ -160,14 +127,11 @@ Some details you should know about the code:
 You can also read a document as a Jackson `JsonNode`:
 
 ```java
-ObjectNode myDocument = arangoDB.db(dbName).collection(collectionName).getDocument("myKey", ObjectNode.class);
-if (myDocument != null) {
-    System.out.println("Key: " + myDocument.get("_key").textValue());
-    System.out.println("Attribute a: " + myDocument.get("a").textValue());
-    System.out.println("Attribute b: " + myDocument.get("b").intValue());
-} else {
-    System.err.println("Failed to get document: myKey;");
-}
+System.out.println("Reading document as Jackson JsonNode...");
+JsonNode jsonNode = collection.getDocument(key, ObjectNode.class);
+System.out.println("Key: " + jsonNode.get("_key").textValue());
+System.out.println("Attribute a: " + jsonNode.get("a").textValue());
+System.out.println("Attribute b: " + jsonNode.get("b").intValue());
 ```
 
 After executing this program the console output should be:
@@ -180,18 +144,15 @@ Attribute b: 42
 
 Some details you should know about the code:
 
-- `getDocument()` returns the stored document data in the VelocyPack format (VPackSlice)
+- `getDocument()` returns the stored document as instance of `com.fasterxml.jackson.databind.JsonNode`.
 
 
 ## Update a document
 
 ```java
-myObject.addAttribute("c", "Bar");
-try {
-    arangoDB.db(dbName).collection(collectionName).updateDocument("myKey", myObject);
-} catch (ArangoDBException e) {
-    System.err.println("Failed to update document. " + e.getMessage());
-}
+doc.addAttribute("c", "Bar");
+System.out.println("Updating document ...");
+collection.updateDocument(key, doc);
 ```
 
 
@@ -200,15 +161,12 @@ try {
 Let’s read the document again:
 
 ```java
-try {
-    BaseDocument myUpdatedDocument = arangoDB.db(dbName).collection(collectionName).getDocument("myKey", BaseDocument.class);
-    System.out.println("Key: " + myUpdatedDocument.getKey());
-    System.out.println("Attribute a: " + myUpdatedDocument.getAttribute("a"));
-    System.out.println("Attribute b: " + myUpdatedDocument.getAttribute("b"));
-    System.out.println("Attribute c: " + myUpdatedDocument.getAttribute("c"));
-} catch (ArangoDBException e) {
-    System.err.println("Failed to get document: myKey; " + e.getMessage());
-}
+System.out.println("Reading updated document ...");
+BaseDocument updatedDocument = collection.getDocument(key, BaseDocument.class);
+System.out.println("Key: " + updatedDocument.getKey());
+System.out.println("Attribute a: " + updatedDocument.getAttribute("a"));
+System.out.println("Attribute b: " + updatedDocument.getAttribute("b"));
+System.out.println("Attribute c: " + updatedDocument.getAttribute("c"));
 ```
 
 After executing this program the console output should look like this:
@@ -226,11 +184,8 @@ Attribute c: Bar
 Let’s delete a document:
 
 ```java
-try {
-    arangoDB.db(dbName).collection(collectionName).deleteDocument("myKey");
-} catch (ArangoDBException e) {
-    System.err.println("Failed to delete document. " + e.getMessage());
-}
+System.out.println("Deleting document ...");
+collection.deleteDocument(key);
 ```
 
 
@@ -239,10 +194,8 @@ try {
 First we need to create some documents with the name Homer in collection firstCollection:
 
 ```java
-ArangoCollection collection = arangoDB.db(dbName).collection(collectionName);
 for (int i = 0; i < 10; i++) {
-    BaseDocument value = new BaseDocument();
-    value.setKey(String.valueOf(i));
+    BaseDocument value = new BaseDocument(String.valueOf(i));
     value.addAttribute("name", "Homer");
     collection.insertDocument(value);
 }
@@ -251,16 +204,11 @@ for (int i = 0; i < 10; i++) {
 Get all documents with the name Homer from collection firstCollection and iterate over the result:
 
 ```java
-try {
-    String query = "FOR t IN firstCollection FILTER t.name == @name RETURN t";
-    Map<String, Object> bindVars = Collections.singletonMap("name", "Homer");
-    ArangoCursor<BaseDocument> cursor = arangoDB.db(dbName).query(query, bindVars, null, BaseDocument.class);
-    cursor.forEachRemaining(aDocument -> {
-        System.out.println("Key: " + aDocument.getKey());
-    });
-} catch (ArangoDBException e) {
-    System.err.println("Failed to execute query. " + e.getMessage());
-}
+String query = "FOR t IN firstCollection FILTER t.name == @name RETURN t";
+Map<String, Object> bindVars = Collections.singletonMap("name", "Homer");
+System.out.println("Executing read query ...");
+ArangoCursor<BaseDocument> cursor = db.query(query, bindVars, null, BaseDocument.class);
+cursor.forEach(aDocument -> System.out.println("Key: " + aDocument.getKey()));
 ```
 
 After executing this program the console output should look something like this:
@@ -290,17 +238,12 @@ Some details you should know about the code:
 Now we will delete the document created before:
 
 ```java
-try {
-    String query = "FOR t IN firstCollection FILTER t.name == @name "
-        + "REMOVE t IN firstCollection LET removed = OLD RETURN removed";
-    Map<String, Object> bindVars = Collections.singletonMap("name", "Homer");
-    ArangoCursor<BaseDocument> cursor = arangoDB.db(dbName).query(query, bindVars, null, BaseDocument.class);
-    cursor.forEachRemaining(aDocument -> {
-        System.out.println("Removed document " + aDocument.getKey());
-    });
-} catch (ArangoDBException e) {
-    System.err.println("Failed to execute query. " + e.getMessage());
-}
+String query = "FOR t IN firstCollection FILTER t.name == @name "
+    + "REMOVE t IN firstCollection LET removed = OLD RETURN removed";
+Map<String, Object> bindVars = Collections.singletonMap("name", "Homer");
+System.out.println("Executing delete query ...");
+ArangoCursor<BaseDocument> cursor = db.query(query, bindVars, null, BaseDocument.class);
+cursor.forEach(aDocument -> System.out.println("Removed document " + aDocument.getKey()));
 ```
 
 After executing this program the console output should look something like this:
