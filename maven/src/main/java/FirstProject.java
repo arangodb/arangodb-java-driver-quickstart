@@ -1,18 +1,24 @@
 import com.arangodb.*;
 import com.arangodb.entity.BaseDocument;
-import com.arangodb.mapping.ArangoJack;
+import com.arangodb.util.RawJson;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 import java.util.Collections;
 import java.util.Map;
 
 public class FirstProject {
+    private static void cleanup() {
+        ArangoDB arangoDB = new ArangoDB.Builder().build();
+        ArangoDatabase db = arangoDB.db(DbName.of("mydb"));
+        if (db.exists()) db.drop();
+    }
+
     public static void main(String[] args) {
+        cleanup();
+
         // Connection
-        ArangoDB arangoDB = new ArangoDB.Builder()
-                .serializer(new ArangoJack())
-                .build();
+        ArangoDB arangoDB = new ArangoDB.Builder().build();
 
         // Creating a database
         ArangoDatabase db = arangoDB.db(DbName.of("mydb"));
@@ -41,13 +47,37 @@ public class FirstProject {
             System.out.println("Attribute b: " + readDocument.getAttribute("b"));
         }
 
+        // Creating a document from Jackson JsonNode
+        System.out.println("Creating a document from Jackson JsonNode...");
+        String keyJackson = "myJacksonKey";
+        JsonNode jsonNode = JsonNodeFactory.instance.objectNode()
+                .put("_key", keyJackson)
+                .put("a", "Bar")
+                .put("b", 53);
+        System.out.println("Inserting document from Jackson JsonNode...");
+        collection.insertDocument(jsonNode);
+
         // Read a document as Jackson JsonNode
         {
             System.out.println("Reading document as Jackson JsonNode...");
-            JsonNode jsonNode = collection.getDocument(key, ObjectNode.class);
-            System.out.println("Key: " + jsonNode.get("_key").textValue());
-            System.out.println("Attribute a: " + jsonNode.get("a").textValue());
-            System.out.println("Attribute b: " + jsonNode.get("b").intValue());
+            JsonNode readJsonNode = collection.getDocument(keyJackson, JsonNode.class);
+            System.out.println("Key: " + readJsonNode.get("_key").textValue());
+            System.out.println("Attribute a: " + readJsonNode.get("a").textValue());
+            System.out.println("Attribute b: " + readJsonNode.get("b").intValue());
+        }
+
+        // Creating a document from JSON String
+        System.out.println("Creating a document from JSON String...");
+        String keyJson = "myJsonKey";
+        RawJson json = RawJson.of("{\"_key\":\"" + keyJson + "\",\"a\":\"Baz\",\"b\":64}");
+        System.out.println("Inserting document from JSON String...");
+        collection.insertDocument(json);
+
+        // Read a document as JSON String
+        {
+            System.out.println("Reading document as JSON String...");
+            RawJson readJson = collection.getDocument(keyJson, RawJson.class);
+            System.out.println(readJson.getValue());
         }
 
         // Update a document
