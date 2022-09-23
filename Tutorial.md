@@ -8,21 +8,14 @@ than 10 minutes you can learn how to use ArangoDB Java driver in Maven and Gradl
 
 To use the ArangoDB Java driver you need to import 2 libraries into your project:
 - [arangodb-java-driver](https://github.com/arangodb/arangodb-java-driver): the driver itself
-- [jackson-dataformat-velocypack](https://github.com/arangodb/jackson-dataformat-velocypack): a dataformat backend 
-  implementation enabling VelocyPack support for [Jackson Databind API](https://github.com/FasterXML/jackson-databind).
 
-In a Maven project you need to add the following dependencies to `pom.xml`:
+In a Maven project you need to add the following dependency to `pom.xml`:
 
 ```xml
 <dependencies>
     <dependency>
         <groupId>com.arangodb</groupId>
         <artifactId>arangodb-java-driver</artifactId>
-        <version>...</version>
-    </dependency>
-    <dependency>
-        <groupId>com.arangodb</groupId>
-        <artifactId>jackson-dataformat-velocypack</artifactId>
         <version>...</version>
     </dependency>
 </dependencies>
@@ -33,7 +26,6 @@ while in a Gradle project you will add the following to `build.gradle`:
 ```groovy
 dependencies {
     implementation 'com.arangodb:arangodb-java-driver:...'
-    implementation 'com.arangodb:jackson-dataformat-velocypack:...'
 }
 ```
 
@@ -43,9 +35,7 @@ dependencies {
 Let's configure and open a connection to start ArangoDB.
 
 ```java
-ArangoDB arangoDB = new ArangoDB.Builder()
-    .serializer(new ArangoJack())
-    .build();
+ArangoDB arangoDB = new ArangoDB.Builder().build();
 ```
 
 > **Hint:** The default connection is to 127.0.0.1:8529.
@@ -122,29 +112,74 @@ Some details you should know about the code:
 - `getDocument()` reads the stored document data and deserilizes it into the given class (`BaseDocument`)
 
 
+## Creating a document from Jackson JsonNode
+
+We can also create a document from a Jackson [JsonNode](https://fasterxml.github.io/jackson-databind/javadoc/2.13/com/fasterxml/jackson/databind/JsonNode.html) object:
+
+```java
+System.out.println("Creating a document from Jackson JsonNode...");
+String keyJackson = "myJacksonKey";
+JsonNode jsonNode = JsonNodeFactory.instance.objectNode()
+        .put("_key", keyJackson)
+        .put("a", "Bar")
+        .put("b", 53);
+System.out.println("Inserting document from Jackson JsonNode...");
+collection.insertDocument(jsonNode);
+```
+
+
 ## Read a document as Jackson JsonNode
 
-You can also read a document as a Jackson `JsonNode`:
+Documents can also be read as Jackson [JsonNode](https://fasterxml.github.io/jackson-databind/javadoc/2.13/com/fasterxml/jackson/databind/JsonNode.html):
 
 ```java
 System.out.println("Reading document as Jackson JsonNode...");
-JsonNode jsonNode = collection.getDocument(key, ObjectNode.class);
-System.out.println("Key: " + jsonNode.get("_key").textValue());
-System.out.println("Attribute a: " + jsonNode.get("a").textValue());
-System.out.println("Attribute b: " + jsonNode.get("b").intValue());
+JsonNode readJsonNode = collection.getDocument(keyJackson, JsonNode.class);
+System.out.println("Key: " + readJsonNode.get("_key").textValue());
+System.out.println("Attribute a: " + readJsonNode.get("a").textValue());
+System.out.println("Attribute b: " + readJsonNode.get("b").intValue());
 ```
 
 After executing this program the console output should be:
 
 ```text
 Key: myKey
-Attribute a: Foo
-Attribute b: 42
+Attribute a: Bar
+Attribute b: 53
 ```
 
 Some details you should know about the code:
 
 - `getDocument()` returns the stored document as instance of `com.fasterxml.jackson.databind.JsonNode`.
+
+
+## Creating a document from JSON String
+
+Documents can also be created from raw JSON strings:
+
+```java
+System.out.println("Creating a document from JSON String...");
+String keyJson = "myJsonKey";
+RawJson json = RawJson.of("{\"_key\":\"" + keyJson + "\",\"a\":\"Baz\",\"b\":64}");
+System.out.println("Inserting document from JSON String...");
+collection.insertDocument(json);
+```
+
+## Read a document as JSON String
+
+Documents can also be read as raw JSON strings:
+
+```java
+System.out.println("Reading document as JSON String...");
+RawJson readJson = collection.getDocument(keyJson, RawJson.class);
+System.out.println(readJson.getValue());
+```
+
+After executing this program the console output should be:
+
+```text
+{"_key":"myJsonKey","_id":"firstCollection/myJsonKey","_rev":"_e0nEe2y---","a":"Baz","b":64}
+```
 
 
 ## Update a document
