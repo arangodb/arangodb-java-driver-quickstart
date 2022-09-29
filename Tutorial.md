@@ -6,10 +6,11 @@ than 10 minutes you can learn how to use ArangoDB Java driver in Maven and Gradl
 
 ## Project configuration
 
-To use the ArangoDB Java driver you need to import 2 libraries into your project:
-- [arangodb-java-driver](https://github.com/arangodb/arangodb-java-driver): the driver itself
+To use the ArangoDB Java driver, you need to import
+[arangodb-java-driver](https://github.com/arangodb/arangodb-java-driver)
+as a library into your project.
 
-In a Maven project you need to add the following dependency to `pom.xml`:
+In a Maven project, you need to add the following dependency to `pom.xml`:
 
 ```xml
 <dependencies>
@@ -21,7 +22,7 @@ In a Maven project you need to add the following dependency to `pom.xml`:
 </dependencies>
 ```
 
-while in a Gradle project you will add the following to `build.gradle`:
+In a Gradle project, you need to add the following to `build.gradle`:
 
 ```groovy
 dependencies {
@@ -184,6 +185,8 @@ After executing this program the console output should be:
 
 ## Update a document
 
+Let's update the document:
+
 ```java
 doc.addAttribute("c", "Bar");
 System.out.println("Updating document ...");
@@ -298,7 +301,5 @@ Removed document: 6
 
 ## Learn more
 
-- Have a look at the [AQL documentation](https://www.arangodb.com/docs/stable/aql/) to learn more about our query language.
-- Do you want to know more about Databases? [Click here!](https://www.arangodb.com/docs/stable/data-modeling.html)
-- Read more about [Collections](https://www.arangodb.com/docs/stable/data-modeling-collections.html).
-- Explore [Documents](https://www.arangodb.com/docs/stable/data-modeling-documents.html) in our documentation.
+- Have a look at the [AQL documentation](https://www.arangodb.com/docs/stable/aql/) to learn more about the query language.
+- Also check out the documentation about ArangoDB's [Data Model & Concepts](https://www.arangodb.com/docs/stable/data-model-and-concepts.html)
