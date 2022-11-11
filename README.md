@@ -1,6 +1,6 @@
 # [DEPRECATED] ArangoDB Java driver tutorial
 
-**This project has been moved under the [Java driver](https://github.com/arangodb/arangodb-java-driver/tutorial) project.**
+**This project has been moved under the [Java driver](https://github.com/arangodb/arangodb-java-driver/tree/v7/tutorial) project.**
 
 ---
 
